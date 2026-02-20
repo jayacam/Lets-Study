@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PED6 Interactive HTML Notes</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --ink:#0b1220;
+      --muted:#5b667a;
+      --card:rgba(255,255,255,.72);
+      --card-strong:rgba(255,255,255,.86);
+      --line:rgba(15,23,42,.12);
+      --shadow: 0 18px 50px rgba(2,6,23,.10);
+      --shadow2: 0 8px 20px rgba(2,6,23,.08);
+      --blur: 14px;
+      --radius: 18px;
+      --accent:#2563eb;
+      --accent2:#06b6d4;
+      --good:#16a34a;
+      --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background: var(--bg);
+      line-height:1.55;
+    }
+
+    /* Subtle high-quality background (still white) */
+    .bg-wrap{
+      position:fixed; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:-1;
+    }
+    .blob{
+      position:absolute;
+      width:520px; height:520px;
+      border-radius:50%;
+      filter: blur(60px);
+      opacity:.22;
+      background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%),
+                  radial-gradient(circle at 70% 70%, var(--accent2), transparent 60%);
+      transform: translate3d(0,0,0);
+      animation: float 14s ease-in-out infinite;
+    }
+    .blob.b2{
+      width:620px; height:620px;
+      opacity:.16;
+      left:auto; right:-180px; top:auto; bottom:-220px;
+      animation-duration: 18s;
+    }
+    @keyframes float{
+      0%,100%{ transform: translate(-120px,-120px) scale(1); }
+      50%{ transform: translate(-70px,-150px) scale(1.05); }
+    }
+
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      background: rgba(255,255,255,.62);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 18px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width: 240px;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(37,99,235,.22), rgba(6,182,212,.20));
+      border: 1px solid rgba(37,99,235,.22);
+      box-shadow: var(--shadow2);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,.7), transparent);
+      transform: rotate(20deg);
+      animation: shine 5s ease-in-out infinite;
+    }
+    @keyframes shine{
+      0%,55%{ transform:translateX(-30%) rotate(20deg); opacity:0 }
+      60%{ opacity:1 }
+      100%{ transform:translateX(60%) rotate(20deg); opacity:0 }
+    }
+    .brand h1{
+      font-size:14px;
+      margin:0;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      flex:1;
+    }
+    .search{
+      position:relative;
+      flex:1;
+      max-width: 520px;
+      min-width: 220px;
+    }
+    .search input{
+      width:100%;
+      padding: 11px 40px 11px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow2);
+      outline:none;
+      font-size: 13px;
+    }
+    .search input:focus{
+      border-color: rgba(37,99,235,.38);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.10), var(--shadow2);
+    }
+    .search .icon{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      opacity:.55;
+      font-size: 14px;
+      user-select:none;
+    }
+
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      cursor:pointer;
+      box-shadow: var(--shadow2);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      transition: transform .08s ease, box-shadow .15s ease, border-color .15s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(37,99,235,.22); }
+    .btn:active{ transform: translateY(0px); box-shadow: 0 4px 10px rgba(2,6,23,.08); }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 9px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow2);
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;background: var(--good);
+      box-shadow: 0 0 0 4px rgba(22,163,74,.10);
+    }
+
+    main{
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px;
+      display:grid;
+      grid-template-columns: 330px 1fr;
+      gap: 18px;
+    }
+
+    /* Sidebar */
+    aside{
+      position:sticky;
+      top: 88px;
+      align-self:start;
+      height: calc(100vh - 110px);
+      overflow:auto;
+      padding-right: 6px;
+    }
+    .panel{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+    }
+    .panel .hd{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .panel .hd h2{
+      margin:0;
+      font-size: 13px;
+      letter-spacing:.2px;
+    }
+    .panel .bd{
+      padding: 12px 10px;
+    }
+    .toc a{
+      display:block;
+      padding: 10px 10px;
+      margin: 6px 6px;
+      border-radius: 14px;
+      text-decoration:none;
+      color: var(--ink);
+      border:1px solid transparent;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .toc a:hover{
+      background: rgba(37,99,235,.07);
+      border-color: rgba(37,99,235,.15);
+      transform: translateY(-1px);
+    }
+    .toc a.active{
+      background: rgba(37,99,235,.10);
+      border-color: rgba(37,99,235,.20);
+    }
+    .mini{
+      padding: 10px 12px;
+      margin: 10px;
+      border-radius: 14px;
+      border:1px dashed rgba(15,23,42,.18);
+      color: var(--muted);
+      font-size: 12px;
+      background: rgba(255,255,255,.55);
+    }
+
+    /* Content area */
+    .content{
+      min-width: 0;
+    }
+    .hero{
+      padding: 18px;
+      border-radius: calc(var(--radius) + 2px);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.70));
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+    }
+    .hero h2{
+      margin:0 0 6px;
+      font-size: 16px;
+      letter-spacing:.2px;
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .stat{
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow2);
+    }
+    .stat b{ display:block; font-size: 12px; margin-bottom: 4px; }
+    .stat span{ color: var(--muted); font-size: 12px; }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin: 14px 0;
+    }
+    .card .title{
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      background: rgba(255,255,255,.45);
+    }
+    .card .title h3{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .card .title .tag{
+      font-size: 12px;
+      color: var(--muted);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      border-radius: 999px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    details{
+      border-top: 1px solid var(--line);
+    }
+    details:first-of-type{
+      border-top:none;
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      user-select:none;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    summary .sleft{
+      display:flex; flex-direction:column; gap:2px;
+      min-width:0;
+    }
+    summary .sleft b{
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing:.1px;
+    }
+    summary .sleft small{
+      color: var(--muted);
+      font-size: 12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 100%;
+    }
+    summary .chev{
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.72);
+      box-shadow: var(--shadow2);
+      transition: transform .18s ease;
+      flex: 0 0 auto;
+    }
+    details[open] summary .chev{ transform: rotate(90deg); }
+    .body{
+      padding: 0 16px 16px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    /* Highlighting for search */
+    mark{
+      background: rgba(245,158,11,.25);
+      border-radius: 6px;
+      padding: 0 3px;
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      padding: 12px 16px 0;
+    }
+
+    /* Utilities */
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .k{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      color: var(--muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      main{ grid-template-columns: 1fr; }
+      aside{ position:relative; top:0; height:auto; }
+      .brand{ min-width: auto; }
+      .grid2{ grid-template-columns: 1fr; }
+    }
+
+    /* Print (optional clean print) */
+    @media print{
+      header, aside, .controls, .blob{ display:none !important; }
+      main{ grid-template-columns: 1fr; padding: 0; }
+      .card, .hero{ box-shadow:none; border:1px solid #ddd; }
+      .panel{ box-shadow:none; }
+      details{ break-inside: avoid; }
+      details[open] .body{ display:block; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-wrap">
+    <div class="blob" style="left:-220px; top:-220px;"></div>
+    <div class="blob b2"></div>
+  </div>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>PED6 Interactive Study Notes</h1>
+          <p>White background • Glass effect • Search • TOC • Expand/Collapse</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search" role="search">
+          <input id="searchInput" type="search" placeholder="Search within notes (e.g., Piaget, ZPD, Erikson, LCP)..." autocomplete="off" />
+          <div class="icon" aria-hidden="true">⌕</div>
+        </div>
+
+        <button class="btn" id="expandAllBtn" title="Expand all sections">
+          <span aria-hidden="true">▾</span> Expand all
+        </button>
+        <button class="btn" id="collapseAllBtn" title="Collapse all sections">
+          <span aria-hidden="true">▸</span> Collapse all
+        </button>
+
+        <button class="btn" id="clearBtn" title="Clear search and highlights">
+          <span aria-hidden="true">✕</span> Clear
+        </button>
+
+        <span class="pill" title="Search matches found in the page">
+          <span class="dot" aria-hidden="true"></span>
+          <span><b id="matchCount">0</b> match(es)</span>
+        </span>
+
+        <span class="pill" title="Keyboard tips">
+          <span aria-hidden="true">⌨</span>
+          <span class="k">Ctrl/⌘ + F</span>
+          <span class="k">Esc</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <aside>
+      <div class="panel">
+        <div class="hd">
+          <h2>Table of Contents</h2>
+        </div>
+        <div class="bd toc" id="toc">
+          <a href="#sec0">Overview</a>
+          <a href="#sec1">1. Defining the Child and Adolescent Learner</a>
+          <a href="#sec2">2. Fundamental Concepts: Growth, Development, Maturation, and Learning</a>
+          <a href="#sec3">3. Major Theories of Child and Adolescent Development</a>
+          <a href="#sec4">4. The 14 Learner-Centered Psychological Principles (LCP) – APA Framework</a>
+          <a href="#sec5">5. Factors Influencing Development & Learning</a>
+          <a href="#sec6">6. Learning Theories & Principles</a>
+          <a href="#sec7">7. Motivation, Classroom Management & Instruction</a>
+          <a href="#sec8">8. Assessment, Grading & Standardized Testing</a>
+          <a href="#sec9">9. Broader Implications for Teaching in the Philippines</a>
+        </div>
+
+        <div class="mini">
+          Tip: Use the search bar to highlight keywords across all sections. “Expand all” helps when you want to scan everything.
+        </div>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div class="hero" id="sec0">
+        <h2><strong>PED6: The Child and Adolescent Learners and Learning Principles – Comprehensive In-Depth Discussion</strong></h2>
+        <p id="heroText">
+          This course (often coded as PED 6, EDUC 1, ED 101, or similar in Philippine teacher-education programs under CHED and aligned with the K-12 curriculum and RA 10533) forms a foundational pillar for pre-service teachers. It equips future educators with a deep, research-based understanding of how children (typically ages 0–12) and adolescents (13–18/19) develop physically, cognitively, socially, emotionally, and morally — and how these processes directly shape effective teaching and learning. The coverage integrates developmental psychology, learning theories, learner-centered principles, individual differences, and practical classroom applications. It emphasizes that teaching is not just content delivery but facilitating holistic growth in diverse, real-world contexts, including inclusive settings.
+          <br><br>
+          The course typically spans 18 weeks (3 units/credits), with midterms and finals assessing theory application. Core objectives include:
+          <br>
+          - Demonstrating understanding of child/adolescent nature, theories, principles, and factors in learning.
+          <br>
+          - Applying developmental knowledge to build positive learner relationships and select appropriate strategies/materials.
+          <br>
+          - Analyzing motivation, reasoning, problem-solving, and assessment.
+          <br>
+          - Advocating learner-centered, inclusive practices.
+          <br><br>
+          Below is an exhaustive, in-depth discussion of <strong>all standard coverage</strong>, synthesized from typical syllabi, modules, and resources used in Philippine institutions (e.g., Cavite State University, Silliman, Philippine Normal University, and common modules).
+        </p>
+
+        <div class="grid2">
+          <div class="stat">
+            <b>Study Mode</b>
+            <span>Use collapsible sections + search highlights.</span>
+          </div>
+          <div class="stat">
+            <b>Quick Actions</b>
+            <span>Expand all to review, collapse all to self-test.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="sec1">
+        <div class="title">
+          <h3>1. Defining the Child and Adolescent Learner</h3>
+          <span class="tag">Core Definitions</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Section Content</b>
+              <small>Child • Adolescent • Key distinctions • Implications</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - <strong>Child</strong>: Generally birth to puberty (0–12 years). Per UN Convention on the Rights of the Child and Philippine contexts (e.g., RA 7610, DepEd policies), a child is under 18, but educationally, focus is on early/middle childhood where foundational skills form. Characteristics: Rapid physical growth, concrete thinking, egocentrism decreasing, dependence on adults transitioning to peer influence.
+            <br>
+            - <strong>Adolescent</strong>: Puberty to adulthood (13–18/19+). Marked by identity formation, abstract thinking, emotional volatility, and preparation for independence. Philippine legislation (e.g., RA 8044 Youth Council) views adolescence as a critical transition period.
+            <br>
+            - <strong>Key Distinctions</strong>: Children rely on sensory/concrete experiences; adolescents handle hypotheticals, moral dilemmas, and self-concept shifts. Teachers must differentiate instruction accordingly (e.g., hands-on for children, debate/project-based for adolescents).
+            <br><br>
+            Implications: Every learner is unique; teachers must observe developmental readiness, not just chronological age.
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec2">
+        <div class="title">
+          <h3>2. Fundamental Concepts: Growth, Development, Maturation, and Learning</h3>
+          <span class="tag">Core Concepts + Principles</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Key Definitions</b>
+              <small>Growth • Development • Maturation • Learning</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - <strong>Growth</strong>: Quantitative, measurable physical changes (height, weight, brain size). Predictable but influenced by nutrition/genetics.
+            <br>
+            - <strong>Development</strong>: Qualitative, progressive increase in complexity/function (e.g., from crawling to walking; simple to abstract thought). Lifelong, multidimensional (physical, cognitive, socioemotional).
+            <br>
+            - <strong>Maturation</strong>: Genetically driven, age-related unfolding of traits (e.g., puberty). Readying for learning but requires environmental stimulation.
+            <br>
+            - <strong>Learning</strong>: Relatively permanent change in behavior/knowledge from experience, interaction, or instruction. Not just maturation; involves active construction.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Major Principles of Development</b>
+              <small>Orderly • Varying rates • Holistic • Plasticity • Lifelong</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Major Principles of Development</strong> (widely covered):
+            <br>
+            1. Development is orderly/sequential (cephalocaudal: head-to-toe; proximodistal: center-to-extremities).
+            <br>
+            2. Proceeds at varying rates (spurts in infancy/puberty; plateaus in middle childhood).
+            <br>
+            3. Continuous yet staged; influenced by heredity (nature) and environment (nurture) interaction.
+            <br>
+            4. Critical/sensitive periods exist (e.g., language acquisition).
+            <br>
+            5. Holistic: Domains interrelate (physical health affects cognition).
+            <br>
+            6. Plasticity: Can be modified by experiences.
+            <br>
+            7. Individual variation; no two develop identically.
+            <br>
+            8. Lifelong and contextual (Bronfenbrenner influence).
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Approaches to Development</b>
+              <small>Traditional • Lifespan</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Approaches to Development</strong>:
+            <br>
+            - Traditional: Heavy emphasis birth–adolescence; decline in old age.
+            <br>
+            - Lifespan: Change continues across life; multidimensional, plastic, contextual, gradual/cumulative.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Havighurst’s Developmental Tasks</b>
+              <small>Milestones across stages</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Havighurst’s Developmental Tasks</strong> (age-specific milestones; failure leads to unhappiness/difficulty in later tasks):
+            <br><br>
+            - Infancy/Early Childhood (0–5/6): Walking, talking, toilet training, forming concepts, distinguishing right/wrong, emotional attachment.
+            <br>
+            - Middle/Late Childhood (6–12): Physical skills, wholesome peer relations, gender roles, reading/writing/arithmetic, conscience, personal independence, attitudes toward groups.
+            <br>
+            - Adolescence (13–18): Emotional independence from adults, economic/career preparation, mature gender roles, peer relations, civic responsibility, value system.
+            <br><br>
+            Educational implication: Align curriculum to tasks (e.g., cooperative learning for peer relations in middle childhood).
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec3">
+        <div class="title">
+          <h3>3. Major Theories of Child and Adolescent Development</h3>
+          <span class="tag">Theories</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Cognitive Development – Jean Piaget</b>
+              <small>Stages • Assimilation/Accommodation • Teaching</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            Stages emphasize how children construct knowledge through assimilation/accommodation and equilibrium.
+            <br><br>
+            - Sensorimotor (0–2): Object permanence, sensory-motor coordination.
+            <br>
+            - Preoperational (2–7): Symbolic thought, language, but egocentrism, centration, lack of conservation.
+            <br>
+            - Concrete Operational (7–11): Logical operations on concrete objects (conservation, classification, seriation).
+            <br>
+            - Formal Operational (12+): Abstract, hypothetical-deductive reasoning, moral/ideological thinking.
+            <br><br>
+            Criticism: Underestimates social/cultural influences; stages not rigid.
+            <br>
+            Teaching: Provide age-appropriate challenges (scaffolding for next stage); use manipulatives for concrete operational learners.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Psychosocial Development – Erik Erikson</b>
+              <small>Stages • Virtues • School-age/adolescent focus</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            Crisis-resolution builds virtues/strengths.
+            <br><br>
+            - Trust vs. Mistrust (0–1): Hope.
+            <br>
+            - Autonomy vs. Shame/Doubt (1–3): Will.
+            <br>
+            - Initiative vs. Guilt (3–6): Purpose.
+            <br>
+            - Industry vs. Inferiority (6–12): Competence (key for school success).
+            <br>
+            - Identity vs. Role Confusion (12–18): Fidelity (adolescent focus; moratorium/exploration).
+            <br>
+            - Later: Intimacy, Generativity, Integrity.
+            <br><br>
+            Implications: Support competence in middle childhood (praise effort); facilitate identity exploration in adolescence (career guidance, clubs) to avoid confusion.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Socio-Cultural Theory – Lev Vygotsky</b>
+              <small>ZPD • Scaffolding • MKO • Culture</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - Social interaction drives development (Zone of Proximal Development – ZPD: tasks child can do with guidance but not alone).
+            <br>
+            - Scaffolding, private speech, cultural tools (language).
+            <br>
+            - More knowledgeable Other (MKO) crucial.
+            <br><br>
+            Implications: Collaborative learning, peer tutoring, guided discovery. Culture shapes cognition (Philippine emphasis on bayanihan/group work fits perfectly).
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Ecological Systems Theory – Urie Bronfenbrenner</b>
+              <small>Nested systems • Classroom implications</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            Development in nested systems.
+            <br><br>
+            - Microsystem: Immediate (family, school, peers).
+            <br>
+            - Mesosystem: Interactions between micros (home-school).
+            <br>
+            - Exosystem: Indirect (parent’s workplace).
+            <br>
+            - Macrosystem: Culture/society/values.
+            <br>
+            - Chronosystem: Time/transitions.
+            <br><br>
+            Implications: Teachers influence micro/mesosystems; address poverty/family issues holistically (e.g., parent involvement programs).
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Moral Development – Lawrence Kohlberg</b>
+              <small>Levels • Criticism • Teaching</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - Preconventional: Punishment/reward.
+            <br>
+            - Conventional: Approval/law-and-order.
+            <br>
+            - Postconventional: Social contract/universal ethics.
+            <br><br>
+            Criticism: Gender/cultural bias (Gilligan’s care ethics alternative).
+            <br>
+            Teaching: Dilemma discussions to advance reasoning.
+            <br><br>
+            Other theories briefly: Freud (psychosexual – early influences), Bandura (social learning – modeling), Maslow (humanistic needs hierarchy).
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec4">
+        <div class="title">
+          <h3>4. The 14 Learner-Centered Psychological Principles (LCP) – APA Framework (Core of the Course)</h3>
+          <span class="tag">14 LCPs</span>
+        </div>
+
+        <div class="hint">Use search terms like “LCP 7” or “metacognition” to quickly find specific principles.</div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Overview</b>
+              <small>4 categories • Learner-centered applications</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            Divided into 4 categories; emphasize internal learner factors in real contexts.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Cognitive & Metacognitive Factors (6)</b>
+              <small>LCP 1–6</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Cognitive & Metacognitive Factors (6)</strong>:
+            <br>
+            1. Nature of learning process: Intentional meaning construction.
+            <br>
+            2. Goals of learning: Meaningful representations with support.
+            <br>
+            3. Construction of knowledge: Link new to existing.
+            <br>
+            4. Strategic thinking & reasoning.
+            <br>
+            5. Thinking about thinking (metacognition).
+            <br>
+            6. Context of learning (culture, tech, instruction).
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Motivational & Affective Factors (3)</b>
+              <small>LCP 7–9</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Motivational & Affective Factors (3)</strong>:
+            <br>
+            7. Motivation/emotions influence what/how much learned.
+            <br>
+            8. Intrinsic motivation via novelty, relevance, choice.
+            <br>
+            9. Effort/persistence for complex tasks.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Developmental & Social Factors (2)</b>
+              <small>LCP 10–11</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Developmental & Social Factors (2)</strong>:
+            <br>
+            10. Developmental influences on learning.
+            <br>
+            11. Social interactions shape learning.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Individual Differences Factors (3)</b>
+              <small>LCP 12–14</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            <strong>Individual Differences Factors (3)</strong>:
+            <br>
+            12. Individual differences in strategies/heredity/experience.
+            <br>
+            13. Learning & diversity (linguistic/cultural).
+            <br>
+            14. Standards & assessment for progress.
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            <div class="sleft">
+              <b>Applications</b>
+              <small>Shift to learner-centered practice</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            Applications: Shift from teacher-centered to learner-centered (e.g., choice in projects, reflection journals, culturally responsive teaching).
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec5">
+        <div class="title">
+          <h3>5. Factors Influencing Development & Learning</h3>
+          <span class="tag">Influences</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Section Content</b>
+              <small>Heredity • Environment • Socioeconomic • Exceptionalities</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - <strong>Heredity vs. Environment</strong>: Interaction (epigenetics).
+            <br>
+            - Biological (nutrition, health, brain development – critical periods).
+            <br>
+            - Socioeconomic, family, peers, school, culture, media.
+            <br>
+            - Exceptionalities: Disabilities (IDEA categories), giftedness.
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec6">
+        <div class="title">
+          <h3>6. Learning Theories & Principles</h3>
+          <span class="tag">Learning Models</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Section Content</b>
+              <small>Behavioral • Social Cognitive • Cognitive • Constructivist</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - <strong>Behavioral</strong>: Thorndike (law of effect), Pavlov (classical), Skinner (operant – reinforcement), applied behavior analysis.
+            <br>
+            - <strong>Social Cognitive</strong>: Bandura (observational learning, self-efficacy).
+            <br>
+            - <strong>Cognitive/Information Processing</strong>: Attention → Memory (sensory, short-term, long-term) → Metacognition; Gestalt (insight); Ausubel (advance organizers); Bruner (spiral curriculum, discovery); Gagné (conditions/hierarchies).
+            <br>
+            - <strong>Constructivist</strong>: Piaget/Vygotsky extensions; meaningful, active building of knowledge.
+            <br>
+            - Complex processes: Problem-solving, transfer, critical/creative thinking.
+            <br><br>
+            Implications: Use reinforcement positively; model behaviors; scaffold; promote metacognition (think-alouds).
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec7">
+        <div class="title">
+          <h3>7. Motivation, Classroom Management & Instruction</h3>
+          <span class="tag">Practice</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Section Content</b>
+              <small>Motivation • Strategies • Management • Differentiation</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - Types: Intrinsic/extrinsic; perspectives (behavioral, humanistic, cognitive, sociocultural).
+            <br>
+            - Strategies: Relevance, autonomy, mastery goals, relatedness.
+            <br>
+            - Management: Physical environment, rules, communication, handling problems (preventive, supportive, corrective).
+            <br>
+            - Design: Learner-centered vs. teacher-centered; planning, differentiation.
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec8">
+        <div class="title">
+          <h3>8. Assessment, Grading & Standardized Testing</h3>
+          <span class="tag">Assessment</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Section Content</b>
+              <small>Classroom • Standardized • Grading</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - Classroom: Traditional, authentic/alternative (portfolios, performance), formative/summative.
+            <br>
+            - Standardized: Aptitude/achievement; teacher roles; issues (bias, high-stakes).
+            <br>
+            - Grading: Criteria-referenced, reporting progress.
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="sec9">
+        <div class="title">
+          <h3>9. Broader Implications for Teaching in the Philippines</h3>
+          <span class="tag">PH Context</span>
+        </div>
+
+        <details open>
+          <summary>
+            <div class="sleft">
+              <b>Section Content</b>
+              <small>Inclusive • Culturally responsive • 21st-century skills</small>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </summary>
+          <div class="body" data-searchable>
+            - Inclusive education (RA 11650, DepEd Order on special needs).
+            <br>
+            - Culturally responsive (indigenous learners, multilingual).
+            <br>
+            - 21st-century skills integration.
+            <br>
+            - Teacher as facilitator, not lecturer; positive relationships key to industry/identity stages.
+            <br><br>
+            This covers <strong>everything</strong> in the standard PED6 scope — from foundational concepts through theories, principles (especially the full 14 LCPs), factors, learning models, to practical applications. Mastery enables teachers to create environments where every child/adolescent thrives. Study by connecting theory to classroom scenarios (e.g., “How would Piaget/Vygotsky/Erikson approach this misbehaving adolescent?”). Review with diagrams, apply via lesson planning, and reflect on personal development. This knowledge is transformative for effective, empathetic education. If you have a specific syllabus/module or exam focus, provide details for even more targeted depth!
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Helpers
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    const searchInput = $("#searchInput");
+    const matchCountEl = $("#matchCount");
+    const clearBtn = $("#clearBtn");
+    const expandAllBtn = $("#expandAllBtn");
+    const collapseAllBtn = $("#collapseAllBtn");
+
+    const searchableBlocks = $$("[data-searchable]");
+    const allDetails = $$("details");
+    const tocLinks = $$("#toc a");
+
+    // Save original HTML so we "do not change content" permanently:
+    // We'll restore it on every search before applying highlights.
+    const originalHTML = new Map();
+    searchableBlocks.forEach(el => originalHTML.set(el, el.innerHTML));
+
+    function escapeRegExp(str){
+      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function clearHighlights(){
+      searchableBlocks.forEach(el => {
+        if (originalHTML.has(el)) el.innerHTML = originalHTML.get(el);
+      });
+      matchCountEl.textContent = "0";
+    }
+
+    function highlightQuery(q){
+      clearHighlights();
+      if(!q) return;
+
+      const query = q.trim();
+      if(!query) return;
+
+      const re = new RegExp(escapeRegExp(query), "gi");
+      let totalMatches = 0;
+
+      searchableBlocks.forEach(el => {
+        const html = originalHTML.get(el);
+        // Count matches (text-level approximation)
+        const plain = el.textContent;
+        const m = plain.match(re);
+        if (m) totalMatches += m.length;
+
+        // Highlight on HTML string safely-ish by replacing inside text nodes:
+        // Approach: temporarily create a DOM, walk text nodes, wrap matches with <mark>.
+        const temp = document.createElement("div");
+        temp.innerHTML = html;
+
+        const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, {
+          acceptNode(node){
+            if(!node.nodeValue) return NodeFilter.FILTER_REJECT;
+            if(!re.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+            re.lastIndex = 0;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+
+        const nodes = [];
+        while(walker.nextNode()) nodes.push(walker.currentNode);
+
+        nodes.forEach(textNode => {
+          const frag = document.createDocumentFragment();
+          const parts = textNode.nodeValue.split(re);
+          const matches = textNode.nodeValue.match(re) || [];
+          for(let i=0;i<parts.length;i++){
+            frag.appendChild(document.createTextNode(parts[i]));
+            if(i < matches.length){
+              const mark = document.createElement("mark");
+              mark.textContent = matches[i];
+              frag.appendChild(mark);
+            }
+          }
+          textNode.parentNode.replaceChild(frag, textNode);
+        });
+
+        el.innerHTML = temp.innerHTML;
+      });
+
+      matchCountEl.textContent = String(totalMatches);
+
+      // Auto-expand sections when searching (helps studying)
+      allDetails.forEach(d => d.open = true);
+    }
+
+    // Expand/Collapse
+    expandAllBtn.addEventListener("click", () => allDetails.forEach(d => d.open = true));
+    collapseAllBtn.addEventListener("click", () => allDetails.forEach(d => d.open = false));
+
+    // Search events
+    let searchDebounce;
+    searchInput.addEventListener("input", (e) => {
+      const q = e.target.value;
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => highlightQuery(q), 120);
+    });
+
+    // Clear
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      clearHighlights();
+      // Keep current open/closed state as-is (optional)
+    });
+
+    // Keyboard: Esc clears search
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "Escape"){
+        searchInput.value = "";
+        clearHighlights();
+      }
+    });
+
+    // Active TOC link on scroll
+    const sections = tocLinks.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          const id = "#" + entry.target.id;
+          tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === id));
+        }
+      });
+    }, { rootMargin: "-50% 0px -45% 0px", threshold: 0.01 });
+
+    sections.forEach(sec => obs.observe(sec));
+
+    // Smooth anchor scroll
+    tocLinks.forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute("href"));
+        if(target){
+          target.scrollIntoView({behavior:"smooth", block:"start"});
+          history.replaceState(null, "", a.getAttribute("href"));
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
